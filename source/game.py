@@ -1,6 +1,6 @@
 import pygame
 import sys
-from source.elements import Bird, Pipe
+from elements import Bird, Pipe
 
 GRAVITY = 0.8
 HEIGHT = 600
