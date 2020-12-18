@@ -28,6 +28,7 @@ class Bird:
 		self.vel = -14
 
 
+
 class Pipe:
 	def __init__(self, screen_size, gap):
 		self.screen_height = screen_size[1]
