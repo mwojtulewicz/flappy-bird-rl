@@ -9,8 +9,8 @@ class Agent:
 		# self.games_count = 0
 		self.discount = 1.0
 		self.lr = 0.7
-		self.eps = 0.8
-		self.reward = {"alive": 1, "dead": -1000}
+		self.eps = 0.9
+		self.reward = {"alive": 0, "dead": -1000}
 
 		# Q Learning initialization
 		self.load_qvalues()
@@ -65,6 +65,16 @@ class Agent:
 
 		x0 = max(pipe.x - x, 0)
 		y0 = pipe.y - y
+
+		if 50 < x0 < 200:
+			x0 = int(x0) - (int(x0) % 10)
+		else:
+			x0 = int(x0) - (int(x0) % 60)
+
+		if -150 < y0 < 150:
+			y0 = int(y0) - (int(y0) % 10)
+		else:
+			y0 = int(y0) - (int(y0) % 60)
 
 		state = str(int(x0)) + '_' + str(int(y0)) + '_' + str(int(vel))
 		self.init_state(state)

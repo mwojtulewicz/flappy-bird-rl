@@ -120,4 +120,5 @@ if __name__ == '__main__':
 	print('\nLearning starts...')
 	ag_scores = game(5000)
 	plt.plot(ag_scores)
+	plt.show()
 	print(f'best score after learning: {max(ag_scores)}')
