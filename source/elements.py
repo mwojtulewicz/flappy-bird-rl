@@ -25,8 +25,7 @@ class Bird:
 		pygame.draw.circle(screen, self.color, (self.x, self.y), self.size)
 
 	def jump(self):
-		self.vel = -14
-
+		self.vel = -13
 
 
 class Pipe:
