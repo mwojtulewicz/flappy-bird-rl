@@ -9,7 +9,7 @@ import time
 GRAVITY = 0.8
 WIDTH = 600
 HEIGHT = 800
-NEXT_PIPE = 270
+NEXT_PIPE = 280
 PIPE_GAP = 240
 
 agent = Agent()
@@ -44,6 +44,8 @@ def game(generations):
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					agent.dump_qvalues(True)
+					plt.plot(scores)
+					plt.show()
 					pygame.quit()
 					sys.exit()
 
@@ -64,10 +66,10 @@ def game(generations):
 			bird.move()
 
 			if bird.y == screen.get_height():
-				print('hit the ground')
+				# print('hit the ground')
 				alive = False
 			if bird.y == 0:
-				print('hit the ceiling')
+				# print('hit the ceiling')
 				alive = False
 
 			# pipes
@@ -75,13 +77,13 @@ def game(generations):
 				pipe.move()
 				# collision
 				if pipe.collide(bird):
-					print(f"collision with pipe at x={pipe.x}")
+					# print(f"collision with pipe at x={pipe.x}")
 					alive = False
 				# passing
 				if pipe.x + pipe.width < bird.x and not pipe.passed:
 					pipe.passed = True
 					score += 1
-					print(f'passed, score: {score}')
+					print(f'{score}', end=' ')
 
 			# returning reward to the agent
 			agent.update_on_reward(alive)
@@ -99,7 +101,7 @@ def game(generations):
 			# clock.tick(200)
 
 		screen.fill((0, 0, 0))
-		print(f" -- score: {score}\n")
+		print(f" -- final score: {score}\n")
 		scores.append(score)
 		# time.sleep(0.1)
 	
@@ -118,7 +120,7 @@ def game(generations):
 
 if __name__ == '__main__':
 	print('\nLearning starts...')
-	ag_scores = game(5000)
-	plt.plot(ag_scores)
+	scores = game(5000)
+	plt.plot(scores)
+	print(f'best score after learning: {max(scores)}')
 	plt.show()
-	print(f'best score after learning: {max(ag_scores)}')
