@@ -98,6 +98,6 @@ Widzę oczywiście wiele możliwości rozwinięcia projektu:
 
 <hr>
 
-**Autor**: Mateusz Wojtulewicz
-
+**Autor**: Mateusz Wojtulewicz <br>
+**Opiekun**: Paweł Jemioło, MSc <br>
 **Data**: 15.01.2020
