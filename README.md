@@ -55,11 +55,19 @@ Dodatkowo został wprowadzony parametr $`\epsilon`$, który określa prawdopodob
 <hr>
 
 # Wyniki
+Po kilku iteracjach podejścia do sposobu dzielenia przestrzeni stanów, dodaniu dekrementacji parametru $`\epsilon`$ agent przekroczył najśmielsze oczekiwania.
 
+Z prawie 100% skutecznością, po 6 godzinnym uczeniu oraz 500 grach zaczął zdobywać 10,000 punktów, czyli poziom przy którym dla zwiększenia czytelności wyników gra jest kończona bez nagradzania agenta.
 
+Wykres przedstawiający ilość punktów w kolejnych grach:
+![](scores.png)
 
+Z ciekawości puściłem jeszcze jedną symulację nauki, ale z ograniczonymi fpsami, dzięki czemu dokładniej widziałem proces uczenia. 
 
-
+Oto moje spostrzeżenia:
+1. Na początku agent uczy się wydłużać czas gry - zmniejszać karę za porażkę - poprzez utrzymywanie się w powietrzu. Jest to strategia krótkoterminowa bo udeża w pierwszą przeszkodę nie biorąc jej pod uwagę.
+2. Dzięki wstępnej dużej wartości $`\epsilon`$ agent eksploruje losowe akcje i znajduje możlliwość jeszcze dłuższego pozostania w grze poprzez przelatywanie przez dziury w przeszkodach. Dzieje się to mniej więcej w 400 iteracji.
+3. Nabiera doświadczenia różnych sytuacji względnego położenia z przeszkodą i szybko ilość punktów eksploduje do maksimum.
 
 <hr>
 
@@ -79,9 +87,17 @@ Widzę oczywiście wiele możliwości rozwinięcia projektu:
 4. inne algorytmy uczenia przez wzmacnianie, takie jak:  Deep Q-Learning, policy network,
 5. inne gry.
 
+<hr>
+
+## Źródła i inspiracje:
+- https://en.wikipedia.org/wiki/Q-learning
+- https://www.manifold.ai/exploration-vs-exploitation-in-reinforcement-learning
+- https://towardsdatascience.com/use-reinforcement-learning-to-train-a-flappy-bird-never-to-die-35b9625aaecc
+- https://github.com/kyokin78/rl-flappybird
 
 
+<hr>
 
+**Autor**: Mateusz Wojtulewicz
 
-
-
+**Data**: 15.01.2020
