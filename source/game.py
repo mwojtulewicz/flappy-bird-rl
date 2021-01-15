@@ -5,11 +5,12 @@ from elements import Bird, Pipe
 from agent import Agent
 import matplotlib.pyplot as plt
 import time
+import numpy as np
 
 GRAVITY = 0.8
 WIDTH = 600
 HEIGHT = 800
-NEXT_PIPE = 280
+NEXT_PIPE = 300
 PIPE_GAP = 240
 
 agent = Agent()
@@ -34,15 +35,19 @@ def game(generations):
 	scores = []
 
 	for n in range(generations):
-		print(f"Game {n}")
+		# restarting game
 		bird = Bird((WIDTH, HEIGHT), grav=GRAVITY)
 		pipes = [Pipe((WIDTH, HEIGHT), PIPE_GAP)]
 		alive = True
 		score = 0
 
+		# game loop
 		while alive:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
+					pygame.quit()
+					agent.dump_qvalues(True)
+					return scores
 					agent.dump_qvalues(True)
 					plt.plot(scores)
 					plt.show()
@@ -54,22 +59,19 @@ def game(generations):
 				# 	if event.key == pygame.K_SPACE:
 				# 		bird.jump()
 
-			# agent action
+			# agent's action
 			pc = [p.bottom for p in pipes if not p.passed][0]
 			action = agent.act(bird.x, bird.y, bird.vel, pc)
 			if action:
 				bird.jump()
 
-			screen.fill((0, 0, 0))
-
-			# bird
+			# bird 
+			# movement
 			bird.move()
-
+			# collinsions with ground and top
 			if bird.y == screen.get_height():
-				# print('hit the ground')
 				alive = False
 			if bird.y == 0:
-				# print('hit the ceiling')
 				alive = False
 
 			# pipes
@@ -77,15 +79,13 @@ def game(generations):
 				pipe.move()
 				# collision
 				if pipe.collide(bird):
-					# print(f"collision with pipe at x={pipe.x}")
 					alive = False
 				# passing
 				if pipe.x + pipe.width < bird.x and not pipe.passed:
 					pipe.passed = True
 					score += 1
-					print(f'{score}', end=' ')
 
-			# returning reward to the agent
+			# returning a reward to the agent
 			agent.update_on_reward(alive)
 
 			# generating next pipe (if last pipe is far enough)
@@ -95,14 +95,27 @@ def game(generations):
 			if pipes[0].x < -pipes[0].width:
 				pipes.pop(0)
 
+			# display
+			# clear background
+			screen.fill((0, 0, 0))
+			# drawinq game elements
 			draw_window(screen, bird, pipes)
 
 			pygame.display.update()
 			# clock.tick(200)
 
-		screen.fill((0, 0, 0))
-		print(f" -- final score: {score}\n")
+			# terminate game if the agent can't die :))
+			# note: without penalizing him with a -1000 reward for dying
+			if(score > 10000):
+				alive = False
+
+		# score saving
+		print(f"Game {n} final score {score}")
 		scores.append(score)
+
+		# exponentialy decaying agents epsilon (probability to act randomly - explore)
+		agent.decay_eps()
+		
 		# time.sleep(0.1)
 	
 	# falling animation
@@ -114,13 +127,17 @@ def game(generations):
 	# 	pygame.display.update()
 	# 	clock.tick(60)
 
+	# saving qvalues to json file
 	agent.dump_qvalues(True)
 	return scores
 
 
 if __name__ == '__main__':
 	print('\nLearning starts...')
+	
 	scores = game(5000)
+	np.savetxt("scores.csv", np.asarray(scores, dtype=np.int64), delimiter=";")
 	plt.plot(scores)
+	plt.savefig("scores.png")
+	
 	print(f'best score after learning: {max(scores)}')
-	plt.show()

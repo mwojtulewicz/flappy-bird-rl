@@ -6,11 +6,11 @@ class Agent:
 
 	def __init__(self):
 		# Q algorithm parameters
-		# self.games_count = 0
 		self.discount = 1.0
 		self.lr = 0.7
-		self.eps = 0.95
-		self.reward = {"alive": 1, "dead": -1000}
+		self.eps = 0.1
+		self.decay_rate = 0.9
+		self.reward = {"alive": 0, "dead": -1000}
 
 		# Q Learning initialization
 		self.load_qvalues()
@@ -39,7 +39,7 @@ class Agent:
 		state = self.get_state(x, y, vel, pipe)
 
 		# action
-		if random.random() < self.eps:
+		if random.random() > self.eps:
 			action = 0 if self.qvalues[state][0] >= self.qvalues[state][1] else 1
 		else:
 			action = int(random.uniform(0, 1))
@@ -66,15 +66,24 @@ class Agent:
 		x0 = max(pipe.x - x, 0)
 		y0 = pipe.y - y
 
-		if 50 < x0 < 200:
+		# dividing the state space
+		
+		# x0
+		if x0 < 50:
+			x0 = int(x0) - (int(x0) % 2)
+		elif x0 < 200:
 			x0 = int(x0) - (int(x0) % 10)
 		else:
-			x0 = int(x0) - (int(x0) % 60)
+			x0 = int(x0) - (int(x0) % 50)
 
-		if -180 < y0 < 180:
-			y0 = int(y0) - (int(y0) % 5)
+		# y0
+		if -200 < y0 < 200:
+			y0 = int(y0) - (int(y0) % 10)
 		else:
 			y0 = int(y0) - (int(y0) % 50)
+
+		# information if its going up or down
+		vel = int(vel < 0)
 
 		state = str(int(x0)) + '_' + str(int(y0)) + '_' + str(int(vel))
 		self.init_state(state)
@@ -92,6 +101,9 @@ class Agent:
 
 		# Q Learning algorithm
 		self.qvalues[s][a] = (1 - self.lr)*self.qvalues[s][a] + self.lr*(r + self.discount*max(self.qvalues[s_]))
+
+	def decay_eps(self):
+		self.eps *= self.decay_rate
 
 	def dump_qvalues(self, force=False):
 		print("Saving Q-Table\n")

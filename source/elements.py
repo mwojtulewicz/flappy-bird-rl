@@ -43,7 +43,7 @@ class Pipe:
 		self.bottom = pygame.Rect(self.x, self.height+self.gap, self.width, b_height)
 
 	def set_height(self):
-		return random.randint(self.gap//2, self.screen_height-1.5*self.gap)
+		return random.randint(self.gap//4, int(self.screen_height-1.75*self.gap))
 
 	def move(self):
 		self.x += self.speed
